@@ -1,7 +1,7 @@
 #pragma once
 /*
  * Name: 
- *    Geom
+ *    MaxLib
  * Description: 
  *    A Set of Utility functions (written on the Raspberry Pi 3b / 4)
  */
