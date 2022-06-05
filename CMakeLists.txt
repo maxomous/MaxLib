@@ -18,15 +18,10 @@ project(MaxLib
 #Generate the shared library from the library sources
 add_library(${PROJECT_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/MaxLib.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/File/File.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Geom/Geom.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Devices/ADS1115/ads1115.cpp
 )
-
-
-# Include other cmakefile projects
-add_subdirectory(File)
-add_subdirectory(Geom)
-target_link_libraries(${PROJECT_NAME} File)
-target_link_libraries(${PROJECT_NAME} Geom)
-
 
 ############################################################
 # Install
@@ -40,7 +35,7 @@ install (TARGETS ${PROJECT_NAME}
 INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/MaxLib.h" DESTINATION include) # INSTALL(FILES ...) or install(DIRECTORY ...) 
 
 # Build list of header files to install from other directorys. Root == "."
-set(HEADER_DIRS "File" "Geom")
+set(HEADER_DIRS "File" "Geom" "Devices/ADS1115")
 ## Add Source Files from the other directories
 foreach(DIR ${HEADER_DIRS})
     # Find all source files & append to list
