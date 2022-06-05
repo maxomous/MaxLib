@@ -9,6 +9,7 @@
 #include "MaxLib/ads1115.h"
 #include "MaxLib/File.h"
 #include "MaxLib/Geom.h"
+#include "MaxLib/Vector.h"
 
 namespace MaxLib {
 } // end namespace MaxLib

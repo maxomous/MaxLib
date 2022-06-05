@@ -35,7 +35,12 @@ install (TARGETS ${PROJECT_NAME}
 INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/MaxLib.h" DESTINATION include) # INSTALL(FILES ...) or install(DIRECTORY ...) 
 
 # Build list of header files to install from other directorys. Root == "."
-set(HEADER_DIRS "File" "Geom" "Devices/ADS1115")
+set(HEADER_DIRS 
+    "Devices/ADS1115"
+    "File" 
+    "Geom" 
+    "Vector" 
+)
 ## Add Source Files from the other directories
 foreach(DIR ${HEADER_DIRS})
     # Find all source files & append to list
