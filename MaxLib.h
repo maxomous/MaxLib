@@ -12,4 +12,8 @@
 #include "MaxLib/Vector.h"
 
 namespace MaxLib {
+    
+    // Return success values
+    enum Status { Success = 0, Failure = 1 };
+    
 } // end namespace MaxLib
