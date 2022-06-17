@@ -61,8 +61,11 @@ static inline Vec2& operator+=(Vec2& a, const double b)      { a.x += b; a.y += 
 static inline Vec2& operator-=(Vec2& a, const double b)      { a.x -= b; a.y -= b; return a;}
 static inline bool  operator==(const Vec2& a, const Vec2& b) { return (a.x == b.x && a.y == b.y); }
 static inline bool  operator!=(const Vec2& a, const Vec2& b) { return (a.x != b.x || a.y != b.y); }
+static inline bool  operator<(const Vec2& a, const Vec2& b)  { return (a.x < b.x && a.y < b.y); }
+static inline bool  operator>(const Vec2& a, const Vec2& b)  { return (a.x > b.x && a.y > b.y); }
+static inline bool  operator>=(const Vec2& a, const Vec2& b) { return (a.x >= b.x && a.y >= b.y); }
+static inline bool  operator<=(const Vec2& a, const Vec2& b) { return (a.x <= b.x && a.y <= b.y); }
 static inline std::ostream& operator<<(std::ostream& os, const Vec2& p) { os << "(" << p.x << ", " << p.y << ")"; return os; }
-
 
 // Vec3 (x, y, x)
 class Vec3 : public Vec2 {
@@ -88,6 +91,10 @@ static inline Vec3& operator+=(Vec3& a, const double b)      { a.x += b; a.y += 
 static inline Vec3& operator-=(Vec3& a, const double b)      { a.x -= b; a.y -= b; a.z -= b; return a;}
 static inline bool  operator==(const Vec3& a, const Vec3& b) { return (a.x == b.x && a.y == b.y && a.z == b.z); }
 static inline bool  operator!=(const Vec3& a, const Vec3& b) { return (a.x != b.x || a.y != b.y || a.z != b.z); }
+static inline bool  operator<(const Vec3& a, const Vec3& b)  { return (a.x < b.x && a.y < b.y && a.z < b.z); }
+static inline bool  operator>(const Vec3& a, const Vec3& b)  { return (a.x > b.x && a.y > b.y && a.z > b.z); }
+static inline bool  operator<=(const Vec3& a, const Vec3& b) { return (a.x <= b.x && a.y <= b.y && a.z <= b.z); }
+static inline bool  operator>=(const Vec3& a, const Vec3& b) { return (a.x >= b.x && a.y >= b.y && a.z >= b.z); }
 static inline std::ostream& operator<<(std::ostream& os, const Vec3& p) { os << "(" << p.x << ", " << p.y << ", " << p.z << ")"; return os; }
 
 // Polar class
