@@ -62,8 +62,8 @@ static inline Vec2& operator-=(Vec2& a, const double b)      { a.x -= b; a.y -= 
 static inline bool  operator==(const Vec2& a, const Vec2& b) { return (a.x == b.x && a.y == b.y); }
 static inline bool  operator!=(const Vec2& a, const Vec2& b) { return (a.x != b.x || a.y != b.y); }
 static inline std::ostream& operator<<(std::ostream& os, const Vec2& p) { os << "(" << p.x << ", " << p.y << ")"; return os; }
- 
- 
+
+
 // Vec3 (x, y, x)
 class Vec3 : public Vec2 {
 public:
@@ -117,8 +117,11 @@ int                          Sign(T val, int zeroValue = 0) { int a = (zeroValue
 // Rounds a number to the nearest decimal place (i.e. RoundTo(1.166, 0.01) = 1.17)
 double                       RoundTo(double input, double dp);
 
+inline Vec2                  Abs(const Vec2& p)   { return { fabs(p.x), fabs(p.y) }; }
+inline Vec3                  Abs(const Vec3& p)   { return { fabs(p.x), fabs(p.y), fabs(p.z) }; }
 inline double                Hypot(const Vec2& p) { return sqrt(p.x*p.x + p.y*p.y); }
 inline double                Hypot(const Vec3& p) { return sqrt(p.x*p.x + p.y*p.y + p.z*p.z); }
+
 
 // Returns Angle between 0 - 2PI
 double                       CleanAngle(double angle);
@@ -153,15 +156,15 @@ Vec2                         TangentOfCircle(const Vec2& p0, const Vec2& pC, dou
 typedef std::optional<Vec2> Intersect;
 // ({}, {}) if no intersect,  (p, {}) if 1 intersect point(tangent)   and  (p1, p2) if 2 intersect points
 typedef std::pair<Intersect, Intersect> IntersectPair;
+
 // calculates the intersection points between 2 circles and passes back in the 2 return pointers
-IntersectPair IntersectTwoCircles(const Vec2& c1, double r1, const Vec2& c2, double r2);
+IntersectPair                IntersectTwoCircles(const Vec2& c1, double r1, const Vec2& c2, double r2);
 // calculates the intersection points between a line and a circle and passes back in the 2 return pointers
-IntersectPair IntersectLineCircle(const Vec2& p1, const Vec2& p2, const Vec2& c, double r);
-// returns whether there is an intersect or not (faster alternative to Geom::IntersectLines however does not return location
+IntersectPair                IntersectLineCircle(const Vec2& p1, const Vec2& p2, const Vec2& c, double r);
+// Calculate intersection of two lines.
+Intersect                    IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
+// returns whether there is an intersect or not (faster alternative to IntersectLines() but does not return location)
 bool                         IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
-// returns 0 on success
-///Calculate intersection of two lines.
-std::optional<Vec2>          IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
 
 
 } // end namespace Geom
