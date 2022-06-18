@@ -1,3 +1,7 @@
+
+# Git script
+QuickGit.sh
+
 # Build folders
 build/
 build-dir/
@@ -34,6 +38,3 @@ build-dir/
 *.exe
 *.out
 *.app
-
-# Shell
-*.sh

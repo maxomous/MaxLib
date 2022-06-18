@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Use location of executable
+cd $(dirname "$0")
 
 cd build;
 if ! cmake .. ; then
