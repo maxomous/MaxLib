@@ -8,8 +8,8 @@ if (( $# == 0 )) ; then
 	exit 1
 fi	
 
-
-if ! git add . ; then
+# Add files (and clean up old)
+if ! git add -u . ; then
     echo "Git Add Failed"
 	exit 1
 fi
