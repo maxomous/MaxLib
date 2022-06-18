@@ -34,3 +34,6 @@ build-dir/
 *.exe
 *.out
 *.app
+
+# Shell
+*.sh

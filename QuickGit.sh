@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Use location of executable
+cd $(dirname "$0")
+
 if (( $# == 0 )) ; then
   	echo "Commit requires a Description"
 	exit 1
