@@ -10,10 +10,12 @@
 #include "MaxLib/File.h"
 #include "MaxLib/Geom.h"
 #include "MaxLib/Vector.h"
+#include "MaxLib/String.h"
 
 namespace MaxLib {
     
     // Return success values
     enum Status { Success = 0, Failure = 1 };
+
     
 } // end namespace MaxLib

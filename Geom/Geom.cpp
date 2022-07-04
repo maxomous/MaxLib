@@ -3,12 +3,12 @@
 namespace MaxLib {
 namespace Geom {
     
-Polar::Polar(double R, double Th) 
+Polar::Polar(double R, double Th)  
 { 
     r = R; th = Th; 
 }
 
-Polar::Polar(Vec2 p) 
+Polar::Polar(const Vec2& p) 
 { 
     r = hypot(p.x, p.y); 
     th = CleanAngle(atan2(p.x, p.y)); 
@@ -23,6 +23,20 @@ double RoundTo(double input, double roundto) {
     double x = input / roundto;
     return (round(x) * roundto);
 }
+
+// Returns the minimum distance between Line l and Point p
+double DistanceBetween(const Vec2& l0, const Vec2& l1, const Vec2& p) 
+{    
+    const double l2 = DistanceBetween(l0, l1) * DistanceBetween(l0, l1); // i.e. |l1-l0|^2 -  avoid a sqrt
+    if (l2 == 0.0) return DistanceBetween(p, l0);   // l0 == l1 case
+    // Consider the line extending the segment, parameterized as l0 + t (l1 - l0).
+    // We find projection of point p onto the line. 
+    // It falls where t = [(p-l0) . (l1-l0)] / |l1-l0|^2
+    // We clamp t from [0,1] to handle points outside the segment vw.
+    const double t = std::max(0.0, std::min(1.0, DotProduct(p - l0, l1 - l0) / l2));
+    const Vec2 projection = l0 + (l1 - l0) * t;  // Projection falls on the segment
+    return DistanceBetween(p, projection);
+} 
 
 // Returns Angle between 0 - 2PI
 double CleanAngle(double angle)
@@ -75,7 +89,7 @@ void CleanAngles(double& startAngle, double& endAngle, Direction direction)
  
 
 // returns angle from positive x axis in CW direction based on centre point and end point
-std::optional<double> AngleBetween(Vec2 p0, Vec2 p1)
+std::optional<double> AngleBetween(const Vec2& p0, const Vec2& p1)
 {
     // error if points are the same
     if( p0 == p1 ) { return {}; }
@@ -83,7 +97,7 @@ std::optional<double> AngleBetween(Vec2 p0, Vec2 p1)
 }
 
 // calculates angle between 3 points        p1 is start, p2 is centre, p3 is end
-std::optional<double> AngleBetween(Vec2 p1, Vec2 p2, Vec2 p3, Direction direction)
+std::optional<double> AngleBetween(const Vec2& p1, const Vec2& p2, const Vec2& p3, Direction direction)
 {
     // error if any points are the same
     if( p1 == p2 || p2 == p3 || p3 == p1 ) { return {}; }
@@ -138,6 +152,10 @@ Vec2 ArcCentreFromRadius(const Vec2& p0, const Vec2& p1, double r, Direction dir
     return pCentre;
 }
 
+double DotProduct(const Vec2& v1, const Vec2& v2)
+{
+    return v1.x * v2.x + v1.y * v2.y;
+}
 
 /** Calculate determinant of matrix:
     [a b]
@@ -146,6 +164,7 @@ double Determinant(double a, double b, double c, double d)
 {
     return a*d - b*c;
 } 
+
 
 // returns true if point ios
 bool LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt)

@@ -20,6 +20,7 @@ add_library(${PROJECT_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/MaxLib.h
     ${CMAKE_CURRENT_SOURCE_DIR}/File/File.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Geom/Geom.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/String/String.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Devices/ADS1115/ads1115.cpp
 )
 
@@ -40,6 +41,7 @@ set(HEADER_DIRS
     "File" 
     "Geom" 
     "Vector" 
+    "String" 
 )
 ## Add Source Files from the other directories
 foreach(DIR ${HEADER_DIRS})

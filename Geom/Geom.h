@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <optional>
 #include <tuple>
 
@@ -53,7 +54,7 @@ static inline Vec2  operator*(const Vec2& a, const Vec2& b)  { return Vec2(a.x *
 static inline Vec2  operator/(const Vec2& a, const Vec2& b)  { return Vec2(a.x / b.x, a.y / b.y); }
 static inline Vec2  operator+(const Vec2& a, const double b) { return Vec2(a.x + b, a.y + b); }
 static inline Vec2  operator-(const Vec2& a, const double b) { return Vec2(a.x - b, a.y - b); }
-static inline Vec2  operator*(const Vec2& a, const double b) { return Vec2(a.x * b, a.y * b); }
+static inline Vec2  operator*(const Vec2& a, const double b) { return Vec2(a.x * b, a.y * b); } 
 static inline Vec2  operator/(const Vec2& a, const double b) { return Vec2(a.x / b, a.y / b); }
 static inline Vec2& operator+=(Vec2& a, const Vec2& b)       { a.x += b.x; a.y += b.y; return a;}
 static inline Vec2& operator-=(Vec2& a, const Vec2& b)       { a.x -= b.x; a.y -= b.y; return a;}
@@ -106,11 +107,18 @@ struct Polar {
     double th;     // Angle
     // Constructor
     Polar(double R = 0.0, double Th = 0.0);
-    Polar(Vec2 p);
+    Polar(const Vec2& p);
     Vec2 Cartesian();
 };
 // Overload polar operators for cout
 static inline std::ostream& operator<<(std::ostream& os, const Polar& pol) { os << "(" << pol.r << ", " << Degrees(pol.th) << "degs)"; return os; }
+
+
+// Collections
+typedef std::vector<Vec2>       Geometry;
+typedef Geometry                Points;
+// A linestring is a polypon when first and last points are identical
+typedef Geometry                LineString;
 
 
 // ************************************************************************************** //
@@ -124,11 +132,14 @@ int                          Sign(T val, int zeroValue = 0) { int a = (zeroValue
 // Rounds a number to the nearest decimal place (i.e. RoundTo(1.166, 0.01) = 1.17)
 double                       RoundTo(double input, double dp);
 
-inline Vec2                  Abs(const Vec2& p)   { return { fabs(p.x), fabs(p.y) }; }
-inline Vec3                  Abs(const Vec3& p)   { return { fabs(p.x), fabs(p.y), fabs(p.z) }; }
-inline double                Hypot(const Vec2& p) { return sqrt(p.x*p.x + p.y*p.y); }
-inline double                Hypot(const Vec3& p) { return sqrt(p.x*p.x + p.y*p.y + p.z*p.z); }
-
+inline Vec2                  Abs(const Vec2& p)                                 { return { fabs(p.x), fabs(p.y) }; }
+inline Vec3                  Abs(const Vec3& p)                                 { return { fabs(p.x), fabs(p.y), fabs(p.z) }; }
+inline double                Hypot(const Vec2& p)                               { return sqrt(p.x*p.x + p.y*p.y); }
+inline double                Hypot(const Vec3& p)                               { return sqrt(p.x*p.x + p.y*p.y + p.z*p.z); }
+inline double                DistanceBetween(const Vec2& p0, const Vec2& p1)    { return Hypot(p1 - p0); }
+inline double                DistanceBetween(const Vec3& p0, const Vec3& p1)    { return Hypot(p1 - p0); }
+// Returns the minimum distance between Line l and Point p
+double                       DistanceBetween(const Vec2& l0, const Vec2& l1, const Vec2& p);
 
 // Returns Angle between 0 - 2PI
 double                       CleanAngle(double angle);
@@ -140,19 +151,22 @@ double                       CleanAngle(double angle);
 void                         CleanAngles(double& startAngle, double& endAngle, Direction direction);
     
 // returns angle from positive x axis in CW direction based on centre point and end point
-std::optional<double>        AngleBetween(Vec2 centre, Vec2 end);
+std::optional<double>        AngleBetween(const Vec2&  centre, const Vec2&  end);
 
 // calculates angle between 3 points        p1 is start, p2 is centre, p3 is end
-std::optional<double>        AngleBetween(Vec2 p1, Vec2 p2, Vec2 p3, Direction direction = Direction::CW);
+std::optional<double>        AngleBetween(const Vec2&  p1, const Vec2& p2, const Vec2& p3, Direction direction = Direction::CW);
 
 
 // calculates centre from radius, start & end points (-r will return the second possible arc)
 Vec2                         ArcCentreFromRadius(const Vec2& p0, const Vec2& p1, double r, Direction direction);
 
- 
+// Calculates the dot product of 2x Vec2's
+double                       DotProduct(const Vec2& v1, const Vec2& v2);
+
 // Calculate determinant of matrix:  [a b]
 //                                   [c d] 
 double                       Determinant(double a, double b, double c, double d);
+
 // returns true if point ios
 bool                         LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt);
 // returns tangent point of circle to point p0, (circle has centre pC, and radius r)     side: 1 is left, -1 is right
