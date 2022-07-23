@@ -76,7 +76,7 @@ public:
     }
     // returns unique id of handler
     static void RegisterHandler(const std::function<void(const char*, LogLevel, const std::string&)>& eventHandler) {
-        std::lock_guard<std::mutex> guard(m_mutex);
+        std::lock_guard<std::mutex> guard(get().m_mutex);
         get().m_PrintHandler = eventHandler;
     }
     static void Debug(int flag, const std::string &msg) { get().Print(flag, LevelDebug, msg.c_str()); }
