@@ -112,6 +112,7 @@ private:
         Print(level, msg, args...);
     }
 
+
     template <typename... Args>
     void Print(LogLevel level, const char *msg, Args... args) {
         // lock the mutex
@@ -121,20 +122,18 @@ private:
         char date[32];
         time_t t = time(NULL);
         strftime(date, 32, "[%H:%M:%S]", localtime(&t));
-        // Make level string
-        std::string level = LevelPrefix(level).c_str();
         // Make message string
         std::string message = MaxLib::String::va_str(msg, args...);
         
-        
         // Print to terminal
-        if(m_logLevelTerminal <= level) { printf("%s%s%s\n", date, level.c_str(), message.c_str()); }
+        if(m_logLevelTerminal <= level) { printf("%s%s%s\n", date, LevelPrefix(level).c_str(), message.c_str()); }
         // print to handler
         if(m_PrintHandler) { m_PrintHandler(date, level, message); }
         // stop program execution
         if (level == LevelCritical)
             exit(1);
     }
+
 
     bool PrintDebug(int flag) {
         std::lock_guard<std::mutex> guard(m_mutex);
