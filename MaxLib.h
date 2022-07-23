@@ -49,7 +49,7 @@ public:
         LevelDebug
     };
     
-    std::string LevelPrefix(LogLevel level) {
+    static std::string LevelPrefix(LogLevel level) {
         if (level == LevelInfo)
             return "[Info] ";
         else if (level == LevelWarning)
