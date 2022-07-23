@@ -1,5 +1,7 @@
 #include "Geom.h"
     
+#include <sstream>
+    
 namespace MaxLib {
 namespace Geom {
     
@@ -17,6 +19,38 @@ Polar::Polar(const Vec2& p)
 Vec2 Polar::Cartesian() 
 { 
     return Vec2 (r*cos(th - M_PI_2),  r*-sin(th - M_PI_2)); 
+}
+
+ // This takes a std::string of 3 values seperated by commas (,) and will return a 3DPoint
+// 4.000,0.000,0.000
+Vec2 StringToVec2(const std::string& msg) 
+{
+    std::stringstream stream(msg);
+    std::string segment;
+    Vec2 p;
+    
+    getline(stream, segment, ',');
+    p.x = stof(segment);
+    getline(stream, segment);
+    p.y = stof(segment);
+    return p;
+}
+ 
+// This takes a std::string of 3 values seperated by commas (,) and will return a 3DPoint
+// 4.000,0.000,0.000
+Vec3 StringToVec3(const std::string& msg) 
+{
+    std::stringstream stream(msg);
+    std::string segment;
+    Vec3 p;
+    
+    std::getline(stream, segment, ',');
+    p.x = stof(segment);
+    std::getline(stream, segment, ',');
+    p.y = stof(segment);
+    std::getline(stream, segment);
+    p.z = stof(segment);
+    return p;
 }
 
 double RoundTo(double input, double roundto) {

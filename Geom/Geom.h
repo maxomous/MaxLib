@@ -68,6 +68,12 @@ static inline bool  operator>=(const Vec2& a, const Vec2& b) { return (a.x >= b.
 static inline bool  operator<=(const Vec2& a, const Vec2& b) { return (a.x <= b.x && a.y <= b.y); }
 static inline std::ostream& operator<<(std::ostream& os, const Vec2& p) { os << "(" << p.x << ", " << p.y << ")"; return os; }
 
+// Containers
+typedef std::vector<Vec2>       Geometry;
+typedef Geometry                Points;
+typedef Geometry                LineString; // A linestring is a polypon when first and last points are identical
+typedef Geometry                Polygon;
+
 // Vec3 (x, y, x)
 class Vec3 : public Vec2 {
 public:
@@ -114,15 +120,16 @@ struct Polar {
 static inline std::ostream& operator<<(std::ostream& os, const Polar& pol) { os << "(" << pol.r << ", " << Degrees(pol.th) << "degs)"; return os; }
 
 
-// Collections
-typedef std::vector<Vec2>       Geometry;
-typedef Geometry                Points;
-// A linestring is a polypon when first and last points are identical
-typedef Geometry                LineString;
-
 
 // ************************************************************************************** //
 // ********************************* Geom Functions ************************************* //
+
+// This takes a std::string of 3 values seperated by commas (,) and will return a 2D Point
+// e.g. "4.000,0.000,0.000"
+Vec2                        StringToVec2(const std::string& msg);
+// This takes a std::string of 3 values seperated by commas (,) and will return a 3D Point
+// e.g. "4.000,0.000,0.000"
+Vec3                        StringToVec3(const std::string& msg);
 
 // returns the sign (1. 0 or -1) of a number
 // 0 can be set to 1 or -1 with zeroValue
