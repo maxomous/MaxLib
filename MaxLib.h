@@ -19,7 +19,7 @@ namespace MaxLib {
 // Normalises seconds into hours, minutes & seconds
 class Time {
 public:
-    Time(uint hours, uint, minutes, uint seconds) : m_hr(hours), m_min(minutes), m_sec(seconds) {}
+    Time(uint hours, uint minutes, uint seconds) : m_hr(hours), m_min(minutes), m_sec(seconds) {}
     Time(uint seconds) { 
         m_hr = seconds / 3600;
         seconds %= 3600;
