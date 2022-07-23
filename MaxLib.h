@@ -68,11 +68,15 @@ public:
         std::lock_guard<std::mutex> guard(get().m_mutex);
         get().m_logLevelTerminal = level;
     }
+    static int NextDebugBit() { 
+        return (0x1 << get().m_DebugBit++); 
+    }
+    
     // set bit flags for use with debugging
     static void SetDebugFlags(int flags) {
         // lock the mutex
         std::lock_guard<std::mutex> guard(get().m_mutex);
-        get().m_debugFlags = flags;
+        get().m_DebugFlags = flags;
     }
     // returns unique id of handler
     static void RegisterHandler(const std::function<void(const char*, LogLevel, const std::string&)>& eventHandler) {
@@ -99,7 +103,8 @@ public:
 private:
 
     LogLevel m_logLevelTerminal = LevelInfo; // default show all
-    int m_debugFlags = 0;                    // default show none
+    int m_DebugBit = 0;
+    int m_DebugFlags = 0;                    // default show none
     std::mutex m_mutex;
     // user settable print handler
     std::function<void(const char*, LogLevel, const std::string&)> m_PrintHandler;
@@ -137,7 +142,7 @@ private:
 
     bool PrintDebug(int flag) {
         std::lock_guard<std::mutex> guard(m_mutex);
-        return m_debugFlags & flag;
+        return m_DebugFlags & flag;
     }
 
     
