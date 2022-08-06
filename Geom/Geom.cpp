@@ -144,7 +144,7 @@ std::optional<double> AngleBetween(const Vec2& p1, const Vec2& p2, const Vec2& p
     return CleanAngle(output);
 }
 
-Vec2 ArcCentreFromRadius(const Vec2& p0, const Vec2& p1, double r, Direction direction)
+Vec2 ArcCentre(const Vec2& p0, const Vec2& p1, double r, Direction direction)
 {            
     Vec2 dif = p1 - p0;
     // midpoint of start to end    
@@ -184,6 +184,45 @@ Vec2 ArcCentreFromRadius(const Vec2& p0, const Vec2& p1, double r, Direction dir
 
 
     return pCentre;
+}
+
+// Finds the closest centre point to pC (at the same perpendicular distance as pC is from line (p0, p1))
+Vec2 ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC) {
+    // Get distance between line and point
+    double d = DistanceBetween(p0, p1, pC);
+    
+    double th = Polar(p1 - p0).th;
+    double thPerpendicular = CleanAngle(th + M_PI_2);
+    Polar newCentre = Polar(d, thPerpendicular);
+    
+    Vec2 pMid = (p0 + p1) / 2.0;
+    int flipSide = LeftOfLine(p0, p1, pC) ? -1 : 1;
+    return pMid + newCentre.Cartesian() * flipSide;
+}
+
+
+// Finds the centre point of an arc (given p0 & p1) which is tangent to line (l0 -> p0) i.e. l1 == p0
+Vec2 ArcCentreFromTangent(const Vec2& l0, const Vec2& p0, const Vec2& p1) 
+{
+    // We calculate the line perpendicular to line (l0 -> p0) at p0
+    // We calculate the line perpendicular to line (p0 -> p1) at the midpoint of line
+    // the centre point is the intersection point between these 2 lines.
+    // l1 is equiv. to p0
+    const Vec2& l1 = p0;
+    // inverted gradients to give perpendicular lines
+    double m1 = (l1.x - l0.x) / (l1.y - l0.y);
+    double m2 = (p1.x - p0.x) / (p1.y - p0.y);
+    // at points
+    Vec2 a = p0;
+    Vec2 b = (p1 - p0) / 2.0; // mid point
+    double c = l1.y - m1*l1.x;
+    Vec2 pC;
+    // calculate x coord
+    pC.x = (m1*a.x - m2*b.x + b.y - a.y) / (m1 - m2);
+    // calculate y coord
+    pC.y = m1*pC.x + c; 
+    // return centre point
+    return pC;
 }
 
 double DotProduct(const Vec2& v1, const Vec2& v2)

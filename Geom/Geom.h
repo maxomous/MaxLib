@@ -165,7 +165,16 @@ std::optional<double>        AngleBetween(const Vec2&  p1, const Vec2& p2, const
 
 
 // calculates centre from radius, start & end points (-r will return the second possible arc)
-Vec2                         ArcCentreFromRadius(const Vec2& p0, const Vec2& p1, double r, Direction direction);
+Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, double r, Direction direction);
+
+// Finds the closest centre point to pC (at the same perpendicular distance as pC is from line (p0, p1))
+Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC);
+
+// Finds the centre point of an arc (given p0 & p1) which is tangent to line (l0 -> p0)
+Vec2                         ArcCentreFromTangent(const Vec2& l0, const Vec2& p0, const Vec2& p1);
+
+
+
 
 // Calculates the dot product of 2x Vec2's
 double                       DotProduct(const Vec2& v1, const Vec2& v2);
