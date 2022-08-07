@@ -201,26 +201,53 @@ Vec2 ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC) {
 }
 
 
-// Finds the centre point of an arc (given p0 & p1) which is tangent to line (l0 -> p0) i.e. l1 == p0
-Vec2 ArcCentreFromTangent(const Vec2& l0, const Vec2& p0, const Vec2& p1) 
+// Finds the centre point of an arc (given p0 & p1) which is tangent to line (pt -> p0)
+// Will return empty if:
+//      Any of the points are the same
+//      The 3 points are on the same line
+std::optional<Vec2> ArcCentreFromTangent(const Vec2& pt, const Vec2& p0, const Vec2& p1) 
 {
     // We calculate the line perpendicular to line (l0 -> p0) at p0
     // We calculate the line perpendicular to line (p0 -> p1) at the midpoint of line
     // the centre point is the intersection point between these 2 lines.
     // l1 is equiv. to p0
-    const Vec2& l1 = p0;
+    
+    // error points aren't different
+    if(pt == p0 || p0 == p1 || p1 == pt)    { return {}; }
+    
+    Vec2 line1 = p0 - pt;
+    Vec2 line2 = p1 - p0;
+    
     // inverted gradients to give perpendicular lines
-    double m1 = (l1.x - l0.x) / (l1.y - l0.y);
-    double m2 = (p1.x - p0.x) / (p1.y - p0.y);
+    double m1 = (-line1.x) / line1.y;
+    double m2 = (-line2.x) / line2.y;
+    
+    // error if gradients are the same (includes check for 0 == -0 and inf == -inf)
+    if(m1 == m2 || (std::isinf(m1) && std::isinf(m2))) { return {}; }
+    
     // at points
-    Vec2 a = p0;
-    Vec2 b = (p1 - p0) / 2.0; // mid point
-    double c = l1.y - m1*l1.x;
+    Vec2 a = p0;                // end of line1 & beginning of arc / line2
+    Vec2 b = (p1 + p0) / 2.0;   // mid point of line2
+    
+    double c1 = a.y - a.x * m1;
+    double c2 = b.y - b.x * m2;
+        
+    // Calculate x/y coordinates for centre point
     Vec2 pC;
-    // calculate x coord
-    pC.x = (m1*a.x - m2*b.x + b.y - a.y) / (m1 - m2);
-    // calculate y coord
-    pC.y = m1*pC.x + c; 
+    
+    // line1 is horizontal
+    if(line1.y == 0.0)      { pC.x = p0.x; }
+    // line2 is horizontal
+    else if(line2.y == 0.0) { pC.x = b.x; }
+    // calculate x
+    else                    { pC.x = (c2 - c1) / (m1 - m2); }
+    // line1 is vertical
+    if(line1.x == 0.0)      { pC.y = p0.y; }
+    // line 2 is vertical
+    else if(line2.x == 0.0) { pC.y = b.y; }
+    // calculate y = m1 * x + c1, (use y = m2 * x + c2 if line is horizontal)
+    else                    { pC.y = (line1.y == 0.0) ? pC.x*m2 + c2 : pC.x*m1 + c1; }
+    
     // return centre point
     return pC;
 }

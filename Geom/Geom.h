@@ -170,8 +170,11 @@ Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, double r,
 // Finds the closest centre point to pC (at the same perpendicular distance as pC is from line (p0, p1))
 Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC);
 
-// Finds the centre point of an arc (given p0 & p1) which is tangent to line (l0 -> p0)
-Vec2                         ArcCentreFromTangent(const Vec2& l0, const Vec2& p0, const Vec2& p1);
+// Finds the centre point of an arc (given p0 & p1) which is tangent to line (pt -> p0)
+// Will return empty if:
+//      Any of the points are the same
+//      The 3 points are on the same line
+std::optional<Vec2>          ArcCentreFromTangent(const Vec2& l0, const Vec2& p0, const Vec2& p1);
 
 
 
@@ -190,7 +193,7 @@ Vec2                         TangentOfCircle(const Vec2& p0, const Vec2& pC, dou
 
 
 // {} if no intersect,  p if intersect point
-typedef std::optional<Vec2> Intersect;
+typedef std::optional<Vec2>  Intersect;
 // ({}, {}) if no intersect,  (p, {}) if 1 intersect point(tangent)   and  (p1, p2) if 2 intersect points
 typedef std::pair<Intersect, Intersect> IntersectPair;
 
