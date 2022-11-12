@@ -58,6 +58,23 @@ double RoundTo(double input, double roundto) {
     return (round(x) * roundto);
 }
 
+
+
+double DotProduct(const Vec2& v1, const Vec2& v2)
+{
+    return v1.x * v2.x + v1.y * v2.y;
+}
+
+/** Calculate determinant of matrix:
+    [a b]
+    [c d] */
+double Determinant(double a, double b, double c, double d)
+{
+    return a*d - b*c;
+} 
+
+
+
 // Returns the minimum distance between Line l and Point p
 double DistanceBetween(const Vec2& l0, const Vec2& l1, const Vec2& p) 
 {    
@@ -200,12 +217,11 @@ Vec2 ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC) {
     return pMid + newCentre.Cartesian() * flipSide;
 }
 
-
 // Finds the centre point of an arc (given p0 & p1) which is tangent to line (pt -> p0)
 // Will return empty if:
 //      Any of the points are the same
 //      The 3 points are on the same line
-std::optional<Vec2> ArcCentreFromTangent(const Vec2& pt, const Vec2& p0, const Vec2& p1) 
+std::optional<Vec2> ArcCentreFromTangentLine(const Vec2& pt, const Vec2& p0, const Vec2& p1) 
 {
     // We calculate the line perpendicular to line (l0 -> p0) at p0
     // We calculate the line perpendicular to line (p0 -> p1) at the midpoint of line
@@ -219,8 +235,8 @@ std::optional<Vec2> ArcCentreFromTangent(const Vec2& pt, const Vec2& p0, const V
     Vec2 line2 = p1 - p0;
     
     // inverted gradients to give perpendicular lines
-    double m1 = (-line1.x) / line1.y;
-    double m2 = (-line2.x) / line2.y;
+    double m1 = -line1.x / line1.y;
+    double m2 = -line2.x / line2.y;
     
     // error if gradients are the same (includes check for 0 == -0 and inf == -inf)
     if(m1 == m2 || (std::isinf(m1) && std::isinf(m2))) { return {}; }
@@ -252,28 +268,21 @@ std::optional<Vec2> ArcCentreFromTangent(const Vec2& pt, const Vec2& p0, const V
     return pC;
 }
 
-double DotProduct(const Vec2& v1, const Vec2& v2)
-{
-    return v1.x * v2.x + v1.y * v2.y;
-}
-
-/** Calculate determinant of matrix:
-    [a b]
-    [c d] */
-double Determinant(double a, double b, double c, double d)
-{
-    return a*d - b*c;
-} 
-
-
-// returns true if point ios
-bool LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt)
-{
-    return ((p2.x-p1.x)*(pt.y-p1.y) - (p2.y-p1.y)*(pt.x-p1.x)) > 0.0;
+// Finds the end point on a line which is tangent to an arc (p0(unused), p1, pC) with a length (d)
+Vec2 ArcTangentLine(const Vec2& pC, const Vec2& p, Direction direction, double d) {
+    
+    // Angle of pC to p1
+    double th = Polar(p - pC).th;
+    // Angle of tangent line
+    double thPerpendicular = CleanAngle(th + M_PI_2);
+    
+    Polar tangentLine = Polar(d, thPerpendicular);
+    
+    return p + tangentLine.Cartesian() * direction;
 }
 
 // returns tangent point of circle to point p0, (circle has centre pC, and radius r)     side: 1 is left, -1 is right      TODO: ***** CHECK DIRECITON IS CORRECT******
-Vec2 TangentOfCircle(const Vec2& p0, const Vec2& pC, double r, int side)
+Vec2 CircleTangentPoint(const Vec2& p0, const Vec2& pC, double r, int side)
 {
     Vec2 line = p0 - pC;
     Polar pol = Polar(line);
@@ -284,6 +293,12 @@ Vec2 TangentOfCircle(const Vec2& p0, const Vec2& pC, double r, int side)
     return p0 + Polar(sqrt(L*L-r*r), (pol.th - (double)side*th)).Cartesian();        
 }
 
+
+// returns true if point ios
+bool LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt)
+{
+    return ((p2.x-p1.x)*(pt.y-p1.y) - (p2.y-p1.y)*(pt.x-p1.x)) > 0.0;
+}
 
 // calculates the intersection points between 2 circles and passes back in the 2 return pointers
 // return 0 if no intersect,   1 if 1 intersect point(tangent)   and 2 if 2 intersect points

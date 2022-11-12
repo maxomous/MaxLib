@@ -120,7 +120,6 @@ struct Polar {
 static inline std::ostream& operator<<(std::ostream& os, const Polar& pol) { os << "(" << pol.r << ", " << Degrees(pol.th) << "degs)"; return os; }
 
 
-
 // ************************************************************************************** //
 // ********************************* Geom Functions ************************************* //
 
@@ -139,10 +138,20 @@ int                          Sign(T val, int zeroValue = 0) { int a = (zeroValue
 // Rounds a number to the nearest decimal place (i.e. RoundTo(1.166, 0.01) = 1.17)
 double                       RoundTo(double input, double dp);
 
+
+// Calculates the dot product of 2x Vec2's
+double                       DotProduct(const Vec2& v1, const Vec2& v2);
+
+// Calculate determinant of matrix:  [a b]
+//                                   [c d] 
+double                       Determinant(double a, double b, double c, double d);
+
 inline Vec2                  Abs(const Vec2& p)                                 { return { fabs(p.x), fabs(p.y) }; }
 inline Vec3                  Abs(const Vec3& p)                                 { return { fabs(p.x), fabs(p.y), fabs(p.z) }; }
 inline double                Hypot(const Vec2& p)                               { return sqrt(p.x*p.x + p.y*p.y); }
 inline double                Hypot(const Vec3& p)                               { return sqrt(p.x*p.x + p.y*p.y + p.z*p.z); }
+
+
 inline double                DistanceBetween(const Vec2& p0, const Vec2& p1)    { return Hypot(p1 - p0); }
 inline double                DistanceBetween(const Vec3& p0, const Vec3& p1)    { return Hypot(p1 - p0); }
 // Returns the minimum distance between Line l and Point p
@@ -174,23 +183,18 @@ Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, const Vec
 // Will return empty if:
 //      Any of the points are the same
 //      The 3 points are on the same line
-std::optional<Vec2>          ArcCentreFromTangent(const Vec2& l0, const Vec2& p0, const Vec2& p1);
+std::optional<Vec2>          ArcCentreFromTangentLine(const Vec2& l0, const Vec2& p0, const Vec2& p1);
+
+// Finds the end point on a line of length d which is tangent to an arc with centre pC and tangent point p, the lines travels in direction 
+Vec2                         ArcTangentLine(const Vec2& pC, const Vec2& p, Direction direction, double d);
 
 
-
-
-// Calculates the dot product of 2x Vec2's
-double                       DotProduct(const Vec2& v1, const Vec2& v2);
-
-// Calculate determinant of matrix:  [a b]
-//                                   [c d] 
-double                       Determinant(double a, double b, double c, double d);
-
-// returns true if point ios
-bool                         LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt);
 // returns tangent point of circle to point p0, (circle has centre pC, and radius r)     side: 1 is left, -1 is right
-Vec2                         TangentOfCircle(const Vec2& p0, const Vec2& pC, double r, int side);
+Vec2                         CircleTangentPoint(const Vec2& p0, const Vec2& pC, double r, int side);
 
+
+// returns true if point is left of line
+bool                         LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt);
 
 // {} if no intersect,  p if intersect point
 typedef std::optional<Vec2>  Intersect;
