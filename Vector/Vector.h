@@ -67,7 +67,7 @@ public:
         // Forward args to make_unique
         Add<U>(std::forward<Args>(args)...);
         // Return a reference
-        return m_Items.Size() - 1;
+        return m_Items.size() - 1;
     }
     template <typename... Args>
     size_t Addi(Args&&... args) {
