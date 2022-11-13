@@ -53,14 +53,7 @@ public:
         // Return a reference
         return static_cast<U&>(*m_Items.back());
     }
-    // Return index
-    template <typename U, typename... Args>
-    size_t Add(Args&&... args) {
-        // Forward args to make_unique
-        Add<U>(std::forward<Args>(args)...);
-        // Return a reference
-        return m_Items.Size() - 1;
-    }
+    
 	// Adds an Item (and returns a reference to it)
 	// usage: v.Add() (equivelent to v.Add<base_class>())
     template <typename... Args>
@@ -68,10 +61,18 @@ public:
         // Forward to Add<U>
         return Add<T>(std::forward<Args>(args)...);
     }
+    // Return index after adding item
+    template <typename U, typename... Args>
+    size_t Addi(Args&&... args) {
+        // Forward args to make_unique
+        Add<U>(std::forward<Args>(args)...);
+        // Return a reference
+        return m_Items.Size() - 1;
+    }
     template <typename... Args>
-    size_t Add(Args&&... args) {
+    size_t Addi(Args&&... args) {
         // Forward to Add<U>
-        return Add<T>(std::forward<Args>(args)...);
+        return Addi<T>(std::forward<Args>(args)...);
     }
 
     // Remove item from vector
