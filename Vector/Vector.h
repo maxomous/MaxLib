@@ -46,33 +46,55 @@ public:
 	// Adds a Polymorphic Item (and returns a reference to it)
 	// usage: v.Add<sub_class>()
     // Return reference
+  //  template <typename U, typename... Args>
+  //  T& Add(Args&&... args) {
+  //      // Forward args to make_unique
+  //      m_Items.emplace_back(std::make_unique<U>(std::forward<Args>(args)...));
+  //      // Return a reference
+  //      return static_cast<U&>(*m_Items.back());
+  //  }
     template <typename U, typename... Args>
-    T& Add(Args&&... args) {
+    T* Addp(Args&&... args) {
         // Forward args to make_unique
         m_Items.emplace_back(std::make_unique<U>(std::forward<Args>(args)...));
         // Return a reference
-        return static_cast<U&>(*m_Items.back());
+        return static_cast<U*>(m_Items.back().get());
     }
     
 	// Adds an Item (and returns a reference to it)
 	// usage: v.Add() (equivelent to v.Add<base_class>())
+   //template <typename... Args>
+   //T& Add(Args&&... args) {
+   //    // Forward to Add<U>
+   //    return Add<T>(std::forward<Args>(args)...);
+   //}    
+    template <typename... Args>
+    T* Addp(Args&&... args) {
+        // Forward to Add<U>
+        return Addp<T>(std::forward<Args>(args)...);
+    }
+    // Return index after adding item
+    //template <typename U, typename... Args>
+    //size_t Addi(Args&&... args) {
+    //    // Forward args to make_unique
+    //    Add<U>(std::forward<Args>(args)...);
+    //    // Return a reference
+    //    return m_Items.size() - 1;
+    //}
+    template <typename U, typename... Args>
+    T& Add(Args&&... args) {
+        // Forward args to make_unique & return a reference
+        return static_cast<U&>(*Addp<U>(std::forward<Args>(args)...));
+    }
+    //template <typename... Args>
+    //size_t Addi(Args&&... args) {
+    //    // Forward to Add<U>
+    //    return Addi<T>(std::forward<Args>(args)...);
+    //}
     template <typename... Args>
     T& Add(Args&&... args) {
         // Forward to Add<U>
         return Add<T>(std::forward<Args>(args)...);
-    }
-    // Return index after adding item
-    template <typename U, typename... Args>
-    size_t Addi(Args&&... args) {
-        // Forward args to make_unique
-        Add<U>(std::forward<Args>(args)...);
-        // Return a reference
-        return m_Items.size() - 1;
-    }
-    template <typename... Args>
-    size_t Addi(Args&&... args) {
-        // Forward to Add<U>
-        return Addi<T>(std::forward<Args>(args)...);
     }
 
     // Remove item from vector

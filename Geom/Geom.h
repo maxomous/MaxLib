@@ -56,6 +56,10 @@ static inline Vec2  operator+(const Vec2& a, const double b) { return Vec2(a.x +
 static inline Vec2  operator-(const Vec2& a, const double b) { return Vec2(a.x - b, a.y - b); }
 static inline Vec2  operator*(const Vec2& a, const double b) { return Vec2(a.x * b, a.y * b); } 
 static inline Vec2  operator/(const Vec2& a, const double b) { return Vec2(a.x / b, a.y / b); }
+static inline Vec2  operator+(const double a, const Vec2& b) { return Vec2(a + b.x, a + b.y); }
+static inline Vec2  operator-(const double a, const Vec2& b) { return Vec2(a - b.x, a - b.y); }
+static inline Vec2  operator*(const double a, const Vec2& b) { return Vec2(a * b.x, a * b.y); } 
+static inline Vec2  operator/(const double a, const Vec2& b) { return Vec2(a / b.x, a / b.y); }
 static inline Vec2& operator+=(Vec2& a, const Vec2& b)       { a.x += b.x; a.y += b.y; return a;}
 static inline Vec2& operator-=(Vec2& a, const Vec2& b)       { a.x -= b.x; a.y -= b.y; return a;}
 static inline Vec2& operator+=(Vec2& a, const double b)      { a.x += b; a.y += b; return a;}
