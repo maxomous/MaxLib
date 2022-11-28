@@ -161,6 +161,12 @@ std::optional<double> AngleBetween(const Vec2& p1, const Vec2& p2, const Vec2& p
     return CleanAngle(output);
 }
 
+// Calculates point perpendicular to line (p0->p1) at offset away from pStart
+Vec2 PointPerpendicularToLine (const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart) 
+{
+    return pStart + (offset / hypot(p0.y-p1.y, p1.x-p0.x)) * Vec2(p0.y-p1.y, p1.x-p0.x);
+}
+
 Vec2 ArcCentre(const Vec2& p0, const Vec2& p1, double r, Direction direction)
 {            
     Vec2 dif = p1 - p0;

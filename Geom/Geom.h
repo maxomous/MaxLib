@@ -176,6 +176,8 @@ std::optional<double>        AngleBetween(const Vec2&  centre, const Vec2&  end)
 // calculates angle between 3 points        p1 is start, p2 is centre, p3 is end
 std::optional<double>        AngleBetween(const Vec2&  p1, const Vec2& p2, const Vec2& p3, Direction direction = Direction::CW);
 
+// Calculates point perpendicular to line (p0->p1) at offset away from pStart
+Vec2                         PointPerpendicularToLine(const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart);
 
 // calculates centre from radius, start & end points (-r will return the second possible arc)
 Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, double r, Direction direction);
