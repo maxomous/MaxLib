@@ -73,10 +73,11 @@ static inline bool  operator<=(const Vec2& a, const Vec2& b) { return (a.x <= b.
 static inline std::ostream& operator<<(std::ostream& os, const Vec2& p) { os << "(" << p.x << ", " << p.y << ")"; return os; }
 
 // Containers
-typedef std::vector<Vec2>       Geometry;
-typedef Geometry                Points;
-typedef Geometry                LineString; // A linestring is a polypon when first and last points are identical
-typedef Geometry                Polygon;
+// A container of (x, y) coords (Different names for ease of readability)
+typedef std::vector<Vec2>  Geometry;
+typedef std::vector<Vec2>  Points;
+typedef std::vector<Vec2>  LineString; // A linestring is treated as a polypon when its first and last points are identical
+typedef std::vector<Vec2>  Polygon;
 
 // Vec3 (x, y, x)
 class Vec3 : public Vec2 {
@@ -127,6 +128,14 @@ static inline std::ostream& operator<<(std::ostream& os, const Polar& pol) { os 
 // ************************************************************************************** //
 // ********************************* Geom Functions ************************************* //
 
+// LineString Rendering
+// Render element to linestring
+LineString                  RenderLine(const Vec2& p0, const Vec2& p1);
+LineString                  RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, int arcSegments = 30);
+LineString                  RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, Direction direction, int arcSegments = 30);
+LineString                  RenderCircle(const Vec2& pC, double radius, int arcSegments = 30);
+
+
 // This takes a std::string of 3 values seperated by commas (,) and will return a 2D Point
 // e.g. "4.000,0.000,0.000"
 Vec2                        StringToVec2(const std::string& msg);
@@ -137,84 +146,84 @@ Vec3                        StringToVec3(const std::string& msg);
 // returns the sign (1. 0 or -1) of a number
 // 0 can be set to 1 or -1 with zeroValue
 template <typename T> 
-int                          Sign(T val, int zeroValue = 0) { int a = (zeroValue == 1) ? (T(0) <= val) : (T(0) < val); int b = (zeroValue == -1) ? (val <= T(0)) : (val < T(0)); return a-b; }
+int                         Sign(T val, int zeroValue = 0) { int a = (zeroValue == 1) ? (T(0) <= val) : (T(0) < val); int b = (zeroValue == -1) ? (val <= T(0)) : (val < T(0)); return a-b; }
 
 // Rounds a number to the nearest decimal place (i.e. RoundTo(1.166, 0.01) = 1.17)
-double                       RoundTo(double input, double dp);
+double                      RoundTo(double input, double dp);
 
 
 // Calculates the dot product of 2x Vec2's
-double                       DotProduct(const Vec2& v1, const Vec2& v2);
+double                      DotProduct(const Vec2& v1, const Vec2& v2);
 
 // Calculate determinant of matrix:  [a b]
 //                                   [c d] 
-double                       Determinant(double a, double b, double c, double d);
+double                      Determinant(double a, double b, double c, double d);
 
-inline Vec2                  Abs(const Vec2& p)                                 { return { fabs(p.x), fabs(p.y) }; }
-inline Vec3                  Abs(const Vec3& p)                                 { return { fabs(p.x), fabs(p.y), fabs(p.z) }; }
-inline double                Hypot(const Vec2& p)                               { return sqrt(p.x*p.x + p.y*p.y); }
-inline double                Hypot(const Vec3& p)                               { return sqrt(p.x*p.x + p.y*p.y + p.z*p.z); }
+inline Vec2                 Abs(const Vec2& p)                                 { return { fabs(p.x), fabs(p.y) }; }
+inline Vec3                 Abs(const Vec3& p)                                 { return { fabs(p.x), fabs(p.y), fabs(p.z) }; }
+inline double               Hypot(const Vec2& p)                               { return sqrt(p.x*p.x + p.y*p.y); }
+inline double               Hypot(const Vec3& p)                               { return sqrt(p.x*p.x + p.y*p.y + p.z*p.z); }
 
 
-inline double                DistanceBetween(const Vec2& p0, const Vec2& p1)    { return Hypot(p1 - p0); }
-inline double                DistanceBetween(const Vec3& p0, const Vec3& p1)    { return Hypot(p1 - p0); }
+inline double               DistanceBetween(const Vec2& p0, const Vec2& p1)    { return Hypot(p1 - p0); }
+inline double               DistanceBetween(const Vec3& p0, const Vec3& p1)    { return Hypot(p1 - p0); }
 // Returns the minimum distance between Line l and Point p
-double                       DistanceBetween(const Vec2& l0, const Vec2& l1, const Vec2& p);
+double                      DistanceBetween(const Vec2& l0, const Vec2& l1, const Vec2& p);
 
 // Returns Angle between 0 - 2PI
-double                       CleanAngle(double angle);
+double                      CleanAngle(double angle);
 // Modifies start and end angles to be in correct order based on direction 
 // Makes both >= 0     
 // Output will produce <= 4*PI difference between angles    (anticlockwise curve could be start:710degs to end:359degs
 // If both angles are identical, they will be set to 2*PI out of phase
 // Direction:  1 CW   -1 CCW
-void                         CleanAngles(double& startAngle, double& endAngle, Direction direction);
+void                        CleanAngles(double& startAngle, double& endAngle, Direction direction);
     
 // returns angle from positive x axis in CW direction based on centre point and end point
-std::optional<double>        AngleBetween(const Vec2&  centre, const Vec2&  end);
+std::optional<double>       AngleBetween(const Vec2&  centre, const Vec2&  end);
 
 // calculates angle between 3 points        p1 is start, p2 is centre, p3 is end
-std::optional<double>        AngleBetween(const Vec2&  p1, const Vec2& p2, const Vec2& p3, Direction direction = Direction::CW);
+std::optional<double>       AngleBetween(const Vec2&  p1, const Vec2& p2, const Vec2& p3, Direction direction = Direction::CW);
 
 // Calculates point perpendicular to line (p0->p1) at offset away from pStart
-Vec2                         PointPerpendicularToLine(const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart);
+Vec2                        PointPerpendicularToLine(const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart);
 
 // calculates centre from radius, start & end points (-r will return the second possible arc)
-Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, double r, Direction direction);
+Vec2                        ArcCentre(const Vec2& p0, const Vec2& p1, double r, Direction direction);
 
 // Finds the closest centre point to pC (at the same perpendicular distance as pC is from line (p0, p1))
-Vec2                         ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC);
+Vec2                        ArcCentre(const Vec2& p0, const Vec2& p1, const Vec2& pC);
 
 // Finds the centre point of an arc (given p0 & p1) which is tangent to line (pt -> p0)
 // Will return empty if:
 //      Any of the points are the same
 //      The 3 points are on the same line
-std::optional<Vec2>          ArcCentreFromTangentLine(const Vec2& l0, const Vec2& p0, const Vec2& p1);
+std::optional<Vec2>         ArcCentreFromTangentLine(const Vec2& l0, const Vec2& p0, const Vec2& p1);
 
 // Finds the end point on a line of length d which is tangent to an arc with centre pC and tangent point p, the lines travels in direction 
-Vec2                         ArcTangentLine(const Vec2& pC, const Vec2& p, Direction direction, double d);
+Vec2                        ArcTangentLine(const Vec2& pC, const Vec2& p, Direction direction, double d);
 
 
 // returns tangent point of circle to point p0, (circle has centre pC, and radius r)     side: 1 is left, -1 is right
-Vec2                         CircleTangentPoint(const Vec2& p0, const Vec2& pC, double r, int side);
+Vec2                        CircleTangentPoint(const Vec2& p0, const Vec2& pC, double r, int side);
 
 
 // returns true if point is left of line
-bool                         LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt);
+bool                        LeftOfLine(const Vec2& p1, const Vec2& p2, const Vec2& pt);
 
 // {} if no intersect,  p if intersect point
-typedef std::optional<Vec2>  Intersect;
+typedef std::optional<Vec2> Intersect;
 // ({}, {}) if no intersect,  (p, {}) if 1 intersect point(tangent)   and  (p1, p2) if 2 intersect points
 typedef std::pair<Intersect, Intersect> IntersectPair;
 
 // calculates the intersection points between 2 circles and passes back in the 2 return pointers
-IntersectPair                IntersectTwoCircles(const Vec2& c1, double r1, const Vec2& c2, double r2);
+IntersectPair               IntersectTwoCircles(const Vec2& c1, double r1, const Vec2& c2, double r2);
 // calculates the intersection points between a line and a circle and passes back in the 2 return pointers
-IntersectPair                IntersectLineCircle(const Vec2& p1, const Vec2& p2, const Vec2& c, double r);
+IntersectPair               IntersectLineCircle(const Vec2& p1, const Vec2& p2, const Vec2& c, double r);
 // Calculate intersection of two lines.
-Intersect                    IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
+Intersect                   IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
 // returns whether there is an intersect or not (faster alternative to IntersectLines() but does not return location)
-bool                         IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
+bool                        IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
 
 
 } // end namespace Geom

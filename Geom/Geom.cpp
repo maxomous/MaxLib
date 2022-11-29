@@ -21,6 +21,73 @@ Vec2 Polar::Cartesian()
     return Vec2 (r*cos(th - M_PI_2),  r*-sin(th - M_PI_2)); 
 }
 
+
+
+// ELEMENT RENDERING
+
+LineString RenderLine(const Vec2& p0, const Vec2& p1)
+{
+    return { p0, p1 };
+}
+
+LineString RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, int arcSegments)
+{
+    LineString linestring;
+    // Clean up angles
+    CleanAngles(th_Start, th_End, direction);
+    // Calculate increment from n segments in 90 degrees
+    double th_Incr = direction * (M_PI / 2.0) / arcSegments;
+    // Calculate number of incrments for loop
+    int nIncrements = floorf(fabsf((th_End - th_Start) / th_Incr));
+    
+    // from 'n == 1' because we have already calculated the first angle
+    // to 'n == nIncremenets' to ensure last point is added
+    for (int n = 0; n <= nIncrements; n++) {
+        
+        double th = (n == nIncrements) ? th_End : th_Start + n * th_Incr;
+        // Calculate position from radius and angle
+        Vec2 p = pC + Vec2(fabsf(radius) * sin(th), fabsf(radius) * cos(th));       
+        
+        // This prevents double inclution of point 
+        if(!linestring.empty()) { 
+            if(p == linestring.back()) { continue; }
+        }
+        
+        //Add Line to output
+        linestring.emplace_back(std::move(p));
+    }
+    return std::move(linestring);
+}
+
+LineString RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, MaxLib::Geom::Direction direction, int arcSegments)
+{
+    // get start and end points relative to the centre point
+    Vec2 v_Start    = p0 - pC;
+    Vec2 v_End      = p1 - pC;
+    // get start and end angles
+    double th_Start = atan2(v_Start.x, v_Start.y);
+    double th_End   = atan2(v_End.x, v_End.y);
+    double radius   = hypot(v_End.x, v_End.y);
+    // draw arc between angles
+    LineString arc = RenderArc(pC, radius, direction, th_Start, th_End, arcSegments);
+    // adjust the front and back points to remove rounding errors
+    if(arc.size() >= 2) {
+        arc.front() = p0;
+        arc.back() = p1;
+    }
+    return arc;
+}
+
+LineString RenderCircle(const Vec2& pC, double radius, int arcSegments) {
+    // draw arc between angles
+    LineString circle = RenderArc(pC, radius, Direction::CW, 0.0, 2.0 * M_PI, arcSegments);
+    // make sure the first and last points match as 2PI produces a rounding error
+    if(!circle.empty()) { circle.back() = circle.front(); }
+    return std::move(circle);
+}
+
+
+
  // This takes a std::string of 3 values seperated by commas (,) and will return a 3DPoint
 // 4.000,0.000,0.000
 Vec2 StringToVec2(const std::string& msg) 
