@@ -30,13 +30,14 @@ LineString RenderLine(const Vec2& p0, const Vec2& p1)
     return { p0, p1 };
 }
 
-LineString RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, int arcSegments)
+LineString RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, double arcTolerance)
 {
     LineString linestring;
     // Clean up angles
     CleanAngles(th_Start, th_End, direction);
+    
     // Calculate increment from n segments in 90 degrees
-    double th_Incr = direction * (M_PI / 2.0) / arcSegments;
+    double th_Incr = direction * (M_PI / 2.0) / ArcSegments(radius, arcTolerance);;
     // Calculate number of incrments for loop
     int nIncrements = floorf(fabsf((th_End - th_Start) / th_Incr));
     
@@ -59,7 +60,7 @@ LineString RenderArc(const Vec2& pC, double radius, Direction direction, double 
     return std::move(linestring);
 }
 
-LineString RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, MaxLib::Geom::Direction direction, int arcSegments)
+LineString RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, MaxLib::Geom::Direction direction, double arcTolerance)
 {
     // get start and end points relative to the centre point
     Vec2 v_Start    = p0 - pC;
@@ -69,7 +70,7 @@ LineString RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, MaxLib::Geo
     double th_End   = atan2(v_End.x, v_End.y);
     double radius   = hypot(v_End.x, v_End.y);
     // draw arc between angles
-    LineString arc = RenderArc(pC, radius, direction, th_Start, th_End, arcSegments);
+    LineString arc = RenderArc(pC, radius, direction, th_Start, th_End, arcTolerance);
     // adjust the front and back points to remove rounding errors
     if(arc.size() >= 2) {
         arc.front() = p0;
@@ -78,13 +79,26 @@ LineString RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, MaxLib::Geo
     return arc;
 }
 
-LineString RenderCircle(const Vec2& pC, double radius, int arcSegments) {
+LineString RenderCircle(const Vec2& pC, double radius, double arcTolerance) {
     // draw arc between angles
-    LineString circle = RenderArc(pC, radius, Direction::CW, 0.0, 2.0 * M_PI, arcSegments);
+    LineString circle = RenderArc(pC, radius, Direction::CW, 0.0, 2.0 * M_PI, arcTolerance);
     // make sure the first and last points match as 2PI produces a rounding error
     if(!circle.empty()) { circle.back() = circle.front(); }
     return std::move(circle);
 }
+
+
+// Returns number of segments of a 90 deg arc which has a maximum deviation tolerance for a given radius
+int ArcSegments(double radius, double tolerance)
+{
+    return (int)ceil( Radians(45.0) / acos( 1.0 - (fabs(tolerance) / fabs(radius)) ) );
+}
+/* for the reverse but not really needed
+// Returns the maximum deviation of an arc which has nSegments per 90deg for a given radius
+double ArcTolerance(double radius, int nSegments)
+{
+    return radius * (1.0 - cos(Radians(45.0 / fabs(nSegments))));
+} */  
 
 
 

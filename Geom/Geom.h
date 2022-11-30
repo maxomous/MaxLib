@@ -130,10 +130,12 @@ static inline std::ostream& operator<<(std::ostream& os, const Polar& pol) { os 
 
 // LineString Rendering
 // Render element to linestring
-LineString                  RenderLine(const Vec2& p0, const Vec2& p1);
-LineString                  RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, int arcSegments = 30);
-LineString                  RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, Direction direction, int arcSegments = 30);
-LineString                  RenderCircle(const Vec2& pC, double radius, int arcSegments = 30);
+LineString                  RenderLine(const Vec2& p0, const Vec2& p1); 
+LineString                  RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, double arcTolerance = 0.001);
+LineString                  RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, Direction direction, double arcTolerance = 0.001);
+LineString                  RenderCircle(const Vec2& pC, double radius, double arcTolerance = 0.001);
+// Returns number of segments of a 90 deg arc which has a maximum deviation tolerance for a given radius
+int                         ArcSegments(double radius, double tolerance);
 
 
 // This takes a std::string of 3 values seperated by commas (,) and will return a 2D Point
