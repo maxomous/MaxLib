@@ -66,7 +66,7 @@ public:
         // pass item to make_unique
         m_Items.emplace_back(std::move(item));
         // Return a reference
-        return static_cast<U*>(m_Items.back().get());
+        return static_cast<T*>(m_Items.back().get());
     }
     
 	// Adds a Polymorphic Item (and returns a reference to it)
@@ -88,7 +88,7 @@ public:
 	// Adds a preconstructed Item (and returns a reference to it)
     T& Add(std::unique_ptr<T> item) {
         // pass item to make_unique
-        return static_cast<U&>(*Addp(std::move(item)));
+        return static_cast<T&>(*Addp(std::move(item)));
     }
     
     // Remove item from vector
