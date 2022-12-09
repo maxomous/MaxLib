@@ -43,16 +43,8 @@ public:
     // Marked virtual so that any derived classes' destructor also gets called 
     virtual ~Vector_Ptrs() = default;
     
-	// Adds a Polymorphic Item (and returns a reference to it)
-	// usage: v.Add<sub_class>()
-    // Return reference
-  //  template <typename U, typename... Args>
-  //  T& Add(Args&&... args) {
-  //      // Forward args to make_unique
-  //      m_Items.emplace_back(std::make_unique<U>(std::forward<Args>(args)...));
-  //      // Return a reference
-  //      return static_cast<U&>(*m_Items.back());
-  //  }
+	// Adds a Polymorphic Item (and returns a pointer to it)
+	// usage: T* ptr = v.Addp<Child>()
     template <typename U, typename... Args>
     T* Addp(Args&&... args) {
         // Forward args to make_unique
@@ -61,42 +53,44 @@ public:
         return static_cast<U*>(m_Items.back().get());
     }
     
-	// Adds an Item (and returns a reference to it)
-	// usage: v.Add() (equivelent to v.Add<base_class>())
-   //template <typename... Args>
-   //T& Add(Args&&... args) {
-   //    // Forward to Add<U>
-   //    return Add<T>(std::forward<Args>(args)...);
-   //}    
+	// Adds an Item (and returns a pointer to it)
+	// usage: T* ptr = v.Addp()     (equivelent to v.Addp<Parent>())
     template <typename... Args>
     T* Addp(Args&&... args) {
         // Forward to Add<U>
         return Addp<T>(std::forward<Args>(args)...);
     }
-    // Return index after adding item
-    //template <typename U, typename... Args>
-    //size_t Addi(Args&&... args) {
-    //    // Forward args to make_unique
-    //    Add<U>(std::forward<Args>(args)...);
-    //    // Return a reference
-    //    return m_Items.size() - 1;
-    //}
+    
+	// Adds a preconstructed Item (and returns a pointer to it)
+    T* Addp(std::unique_ptr<T> item) {
+        // pass item to make_unique
+        m_Items.emplace_back(std::move(item));
+        // Return a reference
+        return static_cast<U*>(m_Items.back().get());
+    }
+    
+	// Adds a Polymorphic Item (and returns a reference to it)
+	// usage: T& ref = v.Add<Child>()
     template <typename U, typename... Args>
     T& Add(Args&&... args) {
         // Forward args to make_unique & return a reference
         return static_cast<U&>(*Addp<U>(std::forward<Args>(args)...));
     }
-    //template <typename... Args>
-    //size_t Addi(Args&&... args) {
-    //    // Forward to Add<U>
-    //    return Addi<T>(std::forward<Args>(args)...);
-    //}
+    
+	// Adds an Item (and returns a reference to it)
+	// usage: T& ref = v.Add()  (equivelent to v.Add<Parent>())
     template <typename... Args>
     T& Add(Args&&... args) {
         // Forward to Add<U>
         return Add<T>(std::forward<Args>(args)...);
     }
 
+	// Adds a preconstructed Item (and returns a reference to it)
+    T& Add(std::unique_ptr<T> item) {
+        // pass item to make_unique
+        return static_cast<U&>(*Addp(std::move(item)));
+    }
+    
     // Remove item from vector
     void Remove(size_t index) {
         Assert_IsValid(index);

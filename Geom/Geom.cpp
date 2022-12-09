@@ -35,7 +35,7 @@ LineString RenderArc(const Vec2& pC, double radius, Direction direction, double 
     LineString linestring;
     // Clean up angles
     CleanAngles(th_Start, th_End, direction);
-    
+     
     // Calculate increment from n segments in 90 degrees
     double th_Incr = direction * (M_PI / 2.0) / ArcSegments(radius, arcTolerance);;
     // Calculate number of incrments for loop
@@ -87,10 +87,11 @@ LineString RenderCircle(const Vec2& pC, double radius, double arcTolerance) {
     return std::move(circle);
 }
 
-
+ 
 // Returns number of segments of a 90 deg arc which has a maximum deviation tolerance for a given radius
 int ArcSegments(double radius, double tolerance)
 {
+    if(!radius || !tolerance) { return 1; }
     return (int)ceil( Radians(45.0) / acos( 1.0 - (fabs(tolerance) / fabs(radius)) ) );
 }
 /* for the reverse but not really needed
