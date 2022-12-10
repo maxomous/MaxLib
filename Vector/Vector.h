@@ -10,6 +10,11 @@ namespace MaxLib {
 namespace Vector {
 
 // Creates a new vector based on items within an input vector
+//  Usage:
+//       std::vector<typeB> Bs = VectorCopy<typeA, typeB>(As, [](typeA& from) {
+//           return typeB(from.a);
+//       });
+    
 template<typename T1, typename T2>
 std::vector<T2> VectorCopy(std::vector<T1>& from, std::function<T2(T1&)> cb)
 {
