@@ -9,6 +9,27 @@
 namespace MaxLib {
 namespace Vector {
 
+// Creates a new vector based on items within an input vector
+template<typename T1, typename T2>
+std::vector<T2> VectorCopy(std::vector<T1>& from, std::function<T2(T1&)> cb)
+{
+    std::vector<T2> returnItems;
+    for(T1& item : from) {
+        returnItems.emplace_back(cb(item));
+    }
+    return returnItems;
+}
+
+template<typename T1, typename T2>
+std::vector<T2> VectorCopy(const std::vector<T1>& from, std::function<T2(const T1&)> cb)
+{
+    std::vector<T2> returnItems;
+    for(const T1& item : from) {
+        returnItems.emplace_back(cb(item));
+    }
+    return returnItems;
+}
+
 // A vector wrapper for unique ptrs, simplifies polymorphism
 // Note: The destructor of the Base Class must be marked virtual, otherwise the derived classes' constructor won't get called too
 /*  Usage:
