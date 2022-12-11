@@ -72,13 +72,6 @@ static inline bool  operator>=(const Vec2& a, const Vec2& b) { return (a.x >= b.
 static inline bool  operator<=(const Vec2& a, const Vec2& b) { return (a.x <= b.x && a.y <= b.y); }
 static inline std::ostream& operator<<(std::ostream& os, const Vec2& p) { os << "(" << p.x << ", " << p.y << ")"; return os; }
 
-// Containers
-// A container of (x, y) coords (Different names for ease of readability)
-typedef std::vector<Vec2>  Geometry;
-typedef std::vector<Vec2>  Points;
-typedef std::vector<Vec2>  LineString; // A linestring is treated as a polypon when its first and last points are identical
-typedef std::vector<Vec2>  Polygon;
-
 // Vec3 (x, y, x)
 class Vec3 : public Vec2 {
 public:
@@ -124,6 +117,28 @@ struct Polar {
 // Overload polar operators for cout
 static inline std::ostream& operator<<(std::ostream& os, const Polar& pol) { os << "(" << pol.r << ", " << Degrees(pol.th) << "degs)"; return os; }
 
+
+// 2D Containers
+// A container of (x, y) coords (Different names for ease of readability)
+typedef std::vector<Vec2>  Geometry;
+typedef std::vector<Vec2>  Points;
+typedef std::vector<Vec2>  LineString; // A linestring is treated as a polypon when its first and last points are identical in some functions
+// Polygon contains a shell and holes
+struct Polygon
+{
+    Polygon() {}
+    Polygon(LineString&& geometry) : shell(std::move(geometry)) {}
+    Polygon(LineString&& Shell, std::vector<LineString>&& Holes) : shell(std::move(Shell)), holes(std::move(Holes)) {}
+    LineString shell;
+    std::vector<LineString> holes;
+};
+// A collection of any geometry type. Often used when we dont know what type of geometry will be returned
+struct GeometryCollection
+{
+    std::vector<Vec2>       points;
+    std::vector<LineString> lineStrings;
+    std::vector<Polygon>    polygons;
+};
 
 // ************************************************************************************** //
 // ********************************* Geom Functions ************************************* //
