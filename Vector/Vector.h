@@ -16,7 +16,7 @@ namespace Vector {
 //       });
     
 template<typename T1, typename T2>
-std::vector<T2> VectorCopy(std::vector<T1>& from, std::function<T2(T1&)> cb)
+std::vector<T2> VectorCopy(std::vector<T1>& from, std::function<T2(T1&)> cb = [](T1& item) { return item; })
 {
     std::vector<T2> returnItems;
     for(T1& item : from) {
@@ -26,7 +26,7 @@ std::vector<T2> VectorCopy(std::vector<T1>& from, std::function<T2(T1&)> cb)
 }
 
 template<typename T1, typename T2>
-std::vector<T2> VectorCopy(const std::vector<T1>& from, std::function<T2(const T1&)> cb)
+std::vector<T2> VectorCopy(const std::vector<T1>& from, std::function<T2(const T1&)> cb = [](const T1& item) { return item; })
 {
     std::vector<T2> returnItems;
     for(const T1& item : from) {
