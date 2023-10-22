@@ -138,6 +138,10 @@ struct GeometryCollection
     std::vector<Vec2>       points;
     std::vector<LineString> lineStrings;
     std::vector<Polygon>    polygons;
+    // Copy point, linestring or polygon to collection
+    void AppendGeometry(const Vec2& pts)                { points.emplace_back(pts); }
+    void AppendGeometry(const LineString& linestring)   { lineStrings.emplace_back(linestring); }
+    void AppendGeometry(const Polygon& polygon)         { polygons.emplace_back(polygon); }
 };
 
 // ************************************************************************************** //
