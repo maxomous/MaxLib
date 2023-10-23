@@ -51,9 +51,9 @@ public:
         // fill `m_Items` from the initializer list by creating a smart ptr from each element
         std::transform(items.begin(), items.end(), std::back_inserter(m_Items), [](const T& item) {
             if constexpr (std::is_same_v<Smart_Ptr<T>, std::unique_ptr<T>>) {
-                return make_unique<T>(item);
+                return std::make_unique<T>(item);
             } else if constexpr (std::is_same_v<Smart_Ptr<T>, std::shared_ptr<T>>) {
-                return make_shared<T>(item);
+                return std::make_shared<T>(item);
             } else {
                 assert(0 && "Unknown Type");
             }
@@ -69,9 +69,9 @@ public:
     T* Addp(Args&&... args) {
         // Forward args to make_unique
         if constexpr (std::is_same_v<Smart_Ptr<T>, std::unique_ptr<T>>) {
-            m_Items.emplace_back(make_unique<U>(std::forward<Args>(args)...));
+            m_Items.emplace_back(std::make_unique<U>(std::forward<Args>(args)...));
         } else if constexpr (std::is_same_v<Smart_Ptr<T>, std::shared_ptr<T>>) {
-            m_Items.emplace_back(make_shared<U>(std::forward<Args>(args)...));
+            m_Items.emplace_back(std::make_shared<U>(std::forward<Args>(args)...));
         } else {
             assert(0 && "Unknown Type");
         }
