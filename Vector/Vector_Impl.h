@@ -114,8 +114,8 @@ public:
     const U* CastItem(size_t index) const               { Assert_IsValid(index); return dynamic_cast<U*>(m_Items[index].get()); } // const
     
     // Copy smart pointer
-    Smart_Ptr<T> CopyItem(size_t index)                 { Assert_IsValid(index); 
-        
+    Smart_Ptr<T> CopyItem(size_t index)                 { 
+        Assert_IsValid(index); 
         if constexpr (std::is_same_v<Smart_Ptr<T>, std::shared_ptr<T>>) {
             return m_Items[index]; 
         } else {
@@ -207,6 +207,16 @@ public:
     U* CastCurrentItem()                        { Vector_SmartPtrs<T, Smart_Ptr>::Assert_IsValid(m_CurrentIndex); return dynamic_cast<U*>(Vector_SmartPtrs<T, Smart_Ptr>::m_Items[m_CurrentIndex].get()); } // non-const
     template<typename U>
     const U* CastCurrentItem() const            { Vector_SmartPtrs<T, Smart_Ptr>::Assert_IsValid(m_CurrentIndex); return dynamic_cast<U*>(Vector_SmartPtrs<T, Smart_Ptr>::m_Items[m_CurrentIndex].get()); } // const
+    
+    // Copy smart pointer
+    Smart_Ptr<T> CopyCurrentItem()  { 
+        Vector_SmartPtrs<T, Smart_Ptr>::Assert_IsValid(m_CurrentIndex); 
+        if constexpr (std::is_same_v<Smart_Ptr<T>, std::shared_ptr<T>>) {
+            return Vector_SmartPtrs<T, Smart_Ptr>::m_Items[m_CurrentIndex]; 
+        } else {
+            assert(0 && "Type must be shared_ptr");
+        }
+    } 
     
     // Set the current item by index
     void SetCurrentIndex(int index)             { Assert_IsValidOrUnset(index); m_CurrentIndex = index; }
