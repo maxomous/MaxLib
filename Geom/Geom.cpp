@@ -158,17 +158,12 @@ double Determinant(double a, double b, double c, double d)
 
 
 // Returns the minimum distance between Line l and Point p
-double DistanceBetween(const Vec2& l0, const Vec2& l1, const Vec2& p) 
+double DistanceBetween(const Vec2& a, const Vec2& b, const Vec2& p) 
 {    
-    const double l2 = DistanceBetween(l0, l1) * DistanceBetween(l0, l1); // i.e. |l1-l0|^2 -  avoid a sqrt
-    if (l2 == 0.0) return DistanceBetween(p, l0);   // l0 == l1 case
-    // Consider the line extending the segment, parameterized as l0 + t (l1 - l0).
-    // We find projection of point p onto the line. 
-    // It falls where t = [(p-l0) . (l1-l0)] / |l1-l0|^2
-    // We clamp t from [0,1] to handle points outside the segment vw.
-    const double t = std::max(0.0, std::min(1.0, DotProduct(p - l0, l1 - l0) / l2));
-    const Vec2 projection = l0 + (l1 - l0) * t;  // Projection falls on the segment
-    return DistanceBetween(p, projection);
+    if (a == b) { return 0; }
+    double numerator = std::abs((b.y - a.y) * p.x - (b.x-a.x) * p.y + b.x * a.y - b.y * a.x);
+    double denominator = std::sqrt( (b.y - a.y)*(b.y - a.y) + (b.x - a.x)*(b.x - a.x) );
+    return numerator / denominator;
 } 
 
 // Returns Angle between 0 - 2PI
