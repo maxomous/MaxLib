@@ -206,6 +206,8 @@ std::optional<double>       AngleBetween(const Vec2&  centre, const Vec2&  end);
 // calculates angle between 3 points        p1 is start, p2 is centre, p3 is end
 std::optional<double>       AngleBetween(const Vec2&  p1, const Vec2& p2, const Vec2& p3, Direction direction = Direction::CW);
 
+// Calculates point along line (p0->p1), at distance 'offset' away from pStart
+Vec2                        PointOnLine(const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart);
 // Calculates point perpendicular to line (p0->p1) at offset away from pStart
 Vec2                        PointPerpendicularToLine(const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart);
 

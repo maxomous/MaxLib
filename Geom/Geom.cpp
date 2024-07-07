@@ -243,6 +243,13 @@ std::optional<double> AngleBetween(const Vec2& p1, const Vec2& p2, const Vec2& p
     return CleanAngle(output);
 }
 
+// Calculates point along line (p0->p1), at distance 'offset' away from pStart
+Vec2 PointOnLine(const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart) {
+    
+    double length = MaxLib::Geom::Hypot(p1 - p0);
+    return pStart + offset * (p1-p0) / length;
+}
+
 // Calculates point perpendicular to line (p0->p1) at offset away from pStart
 Vec2 PointPerpendicularToLine (const Vec2& p0, const Vec2& p1, double offset, const Vec2& pStart) 
 {
