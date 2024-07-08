@@ -443,13 +443,6 @@ IntersectPair IntersectLineCircle(const Vec2& p1, const Vec2& p2, const Vec2& c,
     return std::make_pair(pIntersect1, pIntersect2); 
 }
 
-// returns whether there is an intersect or not (faster alternative to IntersectLines however does not return location
-bool IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4)
-{
-    double test1 = (p2.x - p1.x)*(p3.y - p2.y) - (p2.y - p1.y)*(p3.x - p2.x);
-    double test2 = (p2.x - p1.x)*(p4.y - p2.y) - (p2.y - p1.y)*(p4.x - p2.x);
-    return Sign(test1) != Sign(test2);
-}
 // returns 0 on success
 ///Calculate intersection of two lines.
 Intersect IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4)
@@ -475,6 +468,22 @@ Intersect IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const V
     if(!std::isfinite(ixOut) || !std::isfinite(iyOut)) { return {}; }
         
     return Vec2(ixOut, iyOut);
+}
+// returns whether there is an intersect or not (faster alternative to IntersectLines however does not return location
+bool IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4)
+{
+    double test1 = (p2.x - p1.x)*(p3.y - p2.y) - (p2.y - p1.y)*(p3.x - p2.x);
+    double test2 = (p2.x - p1.x)*(p4.y - p2.y) - (p2.y - p1.y)*(p4.x - p2.x);
+    return Sign(test1) != Sign(test2);
+}
+
+// Calculate projection of a point on a line (i.e. the intersection of line (p1,p2) and a line perpendicular, passing through p3.
+Intersect IntersectLinePoint(const Vec2& p1, const Vec2& p2, const Vec2& p3) {
+    
+    Vec2 l1 = p2 - p1; // Line (p1 -> p2)
+    Vec2 l2 = p3 - p1; // Line (p1 -> p3)
+    double t = DotProduct(l2, l1) / DotProduct(l1, l1); // projection formula
+    return p1 + l1 * t; // Closest point on line
 }
 
 } // end namespace Geom

@@ -247,6 +247,9 @@ IntersectPair               IntersectLineCircle(const Vec2& p1, const Vec2& p2, 
 Intersect                   IntersectLines(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
 // returns whether there is an intersect or not (faster alternative to IntersectLines() but does not return location)
 bool                        IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
+// Calculate projection of a point on a line (i.e. the intersection of line (p1,p2) and a line perpendicular, passing through p3.
+Intersect                   IntersectLinePoint(const Vec2& p1, const Vec2& p2, const Vec2& p3);
+
 
 
 } // end namespace Geom
