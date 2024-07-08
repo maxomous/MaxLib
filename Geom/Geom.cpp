@@ -478,7 +478,7 @@ bool IntersectLinesFast(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Ve
 }
 
 // Calculate projection of a point on a line (i.e. the intersection of line (p1,p2) and a line perpendicular, passing through p3.
-Intersect IntersectLinePoint(const Vec2& p1, const Vec2& p2, const Vec2& p3) {
+Vec2 IntersectLinePoint(const Vec2& p1, const Vec2& p2, const Vec2& p3) {
     
     Vec2 l1 = p2 - p1; // Line (p1 -> p2)
     Vec2 l2 = p3 - p1; // Line (p1 -> p3)
