@@ -87,19 +87,20 @@ LineString RenderCircle(const Vec2& pC, double radius, double arcTolerance) {
     return std::move(circle);
 }
 
- 
+LineString RenderSquare(const Vec2& p0, const Vec2& p1) {
+    Vec2 pA = { p0.x, p1.y };
+    Vec2 pB = { p1.x, p0.y };
+    // draw square
+    return { p0, pA, p1, pB, p0 };
+}
+
 // Returns number of segments of a 90 deg arc which has a maximum deviation tolerance for a given radius
 int ArcSegments(double radius, double tolerance)
 {
     if(!radius || !tolerance) { return 1; }
     return (int)ceil( Radians(45.0) / acos( 1.0 - (fabs(tolerance) / fabs(radius)) ) );
 }
-/* for the reverse but not really needed
-// Returns the maximum deviation of an arc which has nSegments per 90deg for a given radius
-double ArcTolerance(double radius, int nSegments)
-{
-    return radius * (1.0 - cos(Radians(45.0 / fabs(nSegments))));
-} */  
+
 
 
 

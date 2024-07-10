@@ -153,6 +153,7 @@ LineString                  RenderLine(const Vec2& p0, const Vec2& p1);
 LineString                  RenderArc(const Vec2& pC, double radius, Direction direction, double th_Start, double th_End, double arcTolerance = 0.001);
 LineString                  RenderArc(const Vec2& p0, const Vec2& p1, const Vec2& pC, Direction direction, double arcTolerance = 0.001);
 LineString                  RenderCircle(const Vec2& pC, double radius, double arcTolerance = 0.001);
+LineString                  RenderSquare(const Vec2& p0, const Vec2& p1);
 // Returns number of segments of a 90 deg arc which has a maximum deviation tolerance for a given radius
 int                         ArcSegments(double radius, double tolerance);
 
